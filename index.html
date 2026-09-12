@@ -38,7 +38,9 @@
     color:var(--ink);
     font-family:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing:antialiased;
+    height:100vh;
     height:100dvh;
+    height:var(--app-height, 100vh);
     display:flex; flex-direction:column; align-items:center;
     overflow:hidden;
   }
@@ -885,6 +887,23 @@
      check their data is still there.
   ============================================================ */
   var APP_VERSION = "1.0.0";
+
+  /* ============================================================
+     REAL VIEWPORT HEIGHT (iOS Safari fix)
+     100dvh is not always reliable in a home-screen standalone app
+     on iOS — it can leave a gap of unfilled space at the bottom.
+     window.innerHeight is measured directly and kept in sync, so
+     the app always fills exactly the visible screen.
+  ============================================================ */
+  function setAppHeight(){
+    document.documentElement.style.setProperty("--app-height", window.innerHeight + "px");
+  }
+  setAppHeight();
+  window.addEventListener("resize", setAppHeight);
+  window.addEventListener("orientationchange", setAppHeight);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", setAppHeight);
+  }
 
   /* ============================================================
      STATE
